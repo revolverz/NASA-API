@@ -1,6 +1,7 @@
 <template>
   <div v-if="currentTutorial" class="edit-form">
     <h4>Tutorial</h4>
+     <ui-button icon="add">SayHi</ui-button>
     <form>
       <div>
         <label for="title">Title</label>

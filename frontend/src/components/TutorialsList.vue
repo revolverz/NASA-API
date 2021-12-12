@@ -10,6 +10,7 @@
           >
             Search
           </button>
+          <ui-button icon="add">SayHi</ui-button>
         </div>
       </div>
     </div>
