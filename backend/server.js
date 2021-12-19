@@ -4,7 +4,9 @@ const cors = require("cors");
 const app = express();
 
 const db = require("./app/models");
-db.sequelize.sync();
+//db.sequelize.sync();
+
+const Role = db.role;
 
 const corsOptions = {
   origin: "http://localhost:8081"
@@ -31,6 +33,36 @@ app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
 });
 
+// dev only
+function initial() {
+  Role.create({
+    id: 1,
+    name: "user"
+  });
+
+  Role.create({
+    id: 2,
+    name: "moderator"
+  });
+
+  Role.create({
+    id: 3,
+    name: "admin"
+  });
+}
+
+db.sequelize.sync().then(() => {
+  initial();
+});
+
+require('./app/routes/auth.routes')(app);
+require('./app/routes/user.routes')(app);
+
+
+// dev.only
 //db.sequelize.sync({ force: true }).then(() => {
 //    console.log("Drop and re-sync db.");
 //});
+
+// prod
+//db.sequelize.sync();

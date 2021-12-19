@@ -1,6 +1,6 @@
 <template>
     <div class="auth-page">
-        <form class="form">
+        <form class="form" @submit.prevent>
             <div class="form__wrapper">
                 <div class="form__header">
                     <ui-tab-bar v-model="activeTab">
@@ -16,6 +16,7 @@
                     </ui-tab-bar>
                 </div>
                 <ui-textfield
+                    v-model="emailValue"
                     input-type="email"
                     placeholder="email"
                     required
@@ -24,6 +25,7 @@
                 </ui-textfield>
                 <ui-textfield
                     v-if="signInTab || signUpTab"
+                    v-model="passwordValue"
                     input-type="password"
                     placeholder="password"
                     required
@@ -36,12 +38,15 @@
                     input-type="password"
                     placeholder="Repeat password"
                     required
-                    :attrs="{autocomplete: 'off'}"
+                    :attrs="{autocomplete: 'current-password'}"
                     class="form__input"
                 >
                 </ui-textfield>
 
-                <ui-button outlined class="form__button-submit">
+                <ui-button
+                    outlined
+                    class="form__button-submit"
+                >
                     {{ t('btnSubmitText') }}
                 </ui-button>
             </div>
@@ -57,6 +62,9 @@ import messages from './locales'
 
 export default {
   setup () {
+    const emailValue = ref('')
+    const passwordValue = ref('')
+
     const activeTab = ref(0)
 
     const signInTab = computed(function () {
@@ -71,7 +79,7 @@ export default {
       messages
     })
 
-    return { activeTab, signInTab, signUpTab, t }
+    return { emailValue, passwordValue, activeTab, signInTab, signUpTab, t }
   }
 
 }
