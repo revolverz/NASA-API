@@ -4,9 +4,14 @@
             <div class="form__wrapper">
                 <div class="form__header">
                     <ui-tab-bar v-model="activeTab">
-                        <ui-tab v-for="(tab, index) in tabs" :key="index"
-                        >
-                            {{tab.text}}
+                        <ui-tab>
+                            {{ t('tab.SignInText') }}
+                        </ui-tab>
+                        <ui-tab>
+                            {{ t('tab.SignUpText') }}
+                        </ui-tab>
+                        <ui-tab>
+                            {{ t('tab.ResetText') }}
                         </ui-tab>
                     </ui-tab-bar>
                 </div>
@@ -18,7 +23,7 @@
                     class="form__input">
                 </ui-textfield>
                 <ui-textfield
-                    v-if="authTab"
+                    v-if="signInTab || signUpTab"
                     input-type="password"
                     placeholder="password"
                     required
@@ -27,7 +32,7 @@
                 >
                 </ui-textfield>
                 <ui-textfield
-                    v-if="loginTab"
+                    v-if="signUpTab"
                     input-type="password"
                     placeholder="Repeat password"
                     required
@@ -35,42 +40,38 @@
                     class="form__input"
                 >
                 </ui-textfield>
+
+                <ui-button outlined class="form__button-submit">
+                    {{ t('btnSubmitText') }}
+                </ui-button>
             </div>
         </form>
     </div>
 </template>
 
 <script>
-import { ref, onMounted, computed } from 'vue'
+import { ref, computed } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+import messages from './locales'
 
 export default {
   setup () {
     const activeTab = ref(0)
-    const tabs = ref(
-      [{
-        text: 'Sign in'
-      },
-      {
-        text: 'Sign up'
-      },
-      {
-        text: 'Reset'
-      }]
-    )
 
-    const authTab = computed(function () {
-      return activeTab.value === 0 || activeTab.value === 1
+    const signInTab = computed(function () {
+      return activeTab.value === 0
     })
 
-    const loginTab = computed(function () {
+    const signUpTab = computed(function () {
       return activeTab.value === 1
     })
 
-    onMounted(() => {
-      console.log(('custom-style-1'))
+    const { t } = useI18n({
+      messages
     })
 
-    return { tabs, activeTab, authTab, loginTab }
+    return { activeTab, signInTab, signUpTab, t }
   }
 
 }
@@ -90,11 +91,7 @@ export default {
     }
 
     .form__wrapper {
-        width: 350px;
-    }
-
-    .form__input:last-of-type {
-        margin-bottom: 0;
+        width: 450px;
     }
 
     .form__header {
@@ -105,6 +102,11 @@ export default {
 
     .form__input {
         margin-bottom: 10px;
+        width: 100%;
+    }
+
+    .form__button-submit {
+        height: 50px;
         width: 100%;
     }
 </style>
