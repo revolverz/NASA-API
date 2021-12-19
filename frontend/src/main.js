@@ -7,7 +7,7 @@ import UiButton from 'balm-ui/components/button'
 import UiForm from 'balm-ui/components/form'
 import UiFormField from 'balm-ui/components/form-field'
 import UiTextfieldComponents from 'balm-ui/components/textfield'
-import UiGridComponents from 'balm-ui/components/grid'
+import UiTabsComponents from 'balm-ui/components/tabs'
 
 import 'balm-ui-css'
 
@@ -17,7 +17,7 @@ app.use(UiButton) // Mandatory
 app.use(UiForm)
 app.use(UiFormField)
 app.use(UiTextfieldComponents)
-app.use(UiGridComponents)
+app.use(UiTabsComponents)
 
 app.use(router)
 
