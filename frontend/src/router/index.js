@@ -1,27 +1,42 @@
 import { createWebHistory, createRouter } from 'vue-router'
+import Home from '../components/Home.vue'
+import Login from '../components/Login.vue'
+// lazy-loaded
+const Profile = () => import('../components/Profile.vue')
+const BoardAdmin = () => import('../components/BoardAdmin.vue')
+const BoardUser = () => import('../components/BoardUser.vue')
 
 const routes = [
   {
     path: '/',
-    alias: '/login',
-    name: 'login',
-    component: () => import('../components/Login')
+    name: 'home',
+    component: Home
   },
   {
-    path: '/tutorials',
-    alias: '/tutorials',
-    name: 'tutorials',
-    component: () => import('../components/TutorialsList')
+    path: '/home',
+    component: Home
   },
   {
-    path: '/tutorials/:id',
-    name: 'tutorial-details',
-    component: () => import('../components/Tutorial')
+    path: '/login',
+    component: Login
   },
   {
-    path: '/add',
-    name: 'add',
-    component: () => import('../components/AddTutorial')
+    path: '/profile',
+    name: 'profile',
+    // lazy-loaded
+    component: Profile
+  },
+  {
+    path: '/admin',
+    name: 'admin',
+    // lazy-loaded
+    component: BoardAdmin
+  },
+  {
+    path: '/user',
+    name: 'user',
+    // lazy-loaded
+    component: BoardUser
   }
 ]
 
@@ -29,5 +44,19 @@ const router = createRouter({
   history: createWebHistory(),
   routes
 })
+
+// router.beforeEach((to, from, next) => {
+//  const publicPages = ['/login', '/register', '/home']
+//  const authRequired = !publicPages.includes(to.path)
+//  const loggedIn = localStorage.getItem('user')
+
+//  // trying to access a restricted page + not logged in
+//  // redirect to login page
+//  if (authRequired && !loggedIn) {
+//    next('/login')
+//  } else {
+//    next()
+//  }
+// })
 
 export default router

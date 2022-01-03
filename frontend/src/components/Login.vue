@@ -1,6 +1,6 @@
 <template>
     <div class="auth-page">
-        <form class="form" @submit.prevent>
+        <form v-if="!loading" class="form" @submit.prevent>
             <div class="form__wrapper">
                 <div class="form__header">
                     <ui-tab-bar v-model="activeTab">
@@ -10,13 +10,13 @@
                         <ui-tab>
                             {{ t('tab.SignUpText') }}
                         </ui-tab>
-                        <ui-tab>
+                        <!--<ui-tab>
                             {{ t('tab.ResetText') }}
-                        </ui-tab>
+                        </ui-tab>-->
                     </ui-tab-bar>
                 </div>
                 <ui-textfield
-                    v-model="emailValue"
+                    v-model="user.email"
                     input-type="email"
                     placeholder="email"
                     required
@@ -25,7 +25,7 @@
                 </ui-textfield>
                 <ui-textfield
                     v-if="signInTab || signUpTab"
-                    v-model="passwordValue"
+                    v-model="user.password"
                     input-type="password"
                     placeholder="password"
                     required
@@ -42,44 +42,89 @@
                     class="form__input"
                 >
                 </ui-textfield>
-
                 <ui-button
-                    outlined
-                    class="form__button-submit"
+                  outlined
+                  class="form__button-submit"
+                  @click="action"
                 >
-                    {{ t('btnSubmitText') }}
+                  {{ t('btnSubmitText') }}
                 </ui-button>
             </div>
         </form>
+        <ui-spinner :active="loading" />
     </div>
 </template>
 
 <script>
-import { ref, computed } from 'vue'
+import { ref, reactive, computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
-
+import { useStore } from 'vuex'
+import { useRouter } from 'vue-router'
 import messages from './locales'
 
 export default {
   setup () {
-    const emailValue = ref('')
-    const passwordValue = ref('')
+    const store = useStore()
+    const router = useRouter()
 
+    const user = reactive({
+      email: '',
+      password: null
+    })
+
+    const loading = ref(false)
     const activeTab = ref(0)
-
-    const signInTab = computed(function () {
-      return activeTab.value === 0
-    })
-
-    const signUpTab = computed(function () {
-      return activeTab.value === 1
-    })
-
     const { t } = useI18n({
       messages
     })
 
-    return { emailValue, passwordValue, activeTab, signInTab, signUpTab, t }
+    const signInTab = computed(function () {
+      return activeTab.value === 0
+    })
+    const signUpTab = computed(function () {
+      return activeTab.value === 1
+    })
+
+    const loggedIn = computed(function () {
+      return store.state.auth.status.loggedIn
+    })
+
+    onMounted(() => {
+      if (loggedIn.value) {
+        router.push('/profile')
+      }
+    })
+
+    async function action () {
+      loading.value = true
+
+      if (signUpTab.value) {
+        store.dispatch('auth/register', user)
+          .then((response) => {
+            console.log(response)
+            loading.value = false
+          })
+          .catch(error => {
+            loading.value = false
+
+            console.log(error)
+          })
+      }
+
+      if (signInTab.value) {
+        store.dispatch('auth/login', user)
+          .then(() => {
+            router.push('/profile')
+          })
+          .catch(error => {
+            loading.value = false
+
+            console.log(error)
+          })
+      }
+    }
+
+    return { action, user, activeTab, signInTab, signUpTab, loading, t }
   }
 
 }
@@ -114,7 +159,6 @@ export default {
     }
 
     .form__button-submit {
-        height: 50px;
         width: 100%;
     }
 </style>

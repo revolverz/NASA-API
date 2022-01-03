@@ -1,6 +1,6 @@
 module.exports = {
   devServer: {
-    port: 8081
+    port: 8080
   },
   runtimeCompiler: true,
   // NOTE: set alias via `configureWebpack` or `chainWebpack`
