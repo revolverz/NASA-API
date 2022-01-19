@@ -1,50 +1,30 @@
 <template>
   <div id="app">
-    <nav>
-      <div>
-        <li>
-          <router-link to="/home">
-            Home
-          </router-link>
-        </li>
-        <li v-if="showAdminBoard">
-          <router-link to="/admin">Admin Board</router-link>
-        </li>
-        <li v-if="currentUser">
-          <router-link  to="/profile">User</router-link>
-        </li>
+    <div class="page">
+      <div class="menu-drawer" v-if="currentUser">
+        <ui-icon-button :toggle="burgerIcon" @click="toggleMenu"></ui-icon-button>
+        <ui-drawer v-if="isOpened" :viewportHeight="true">
+          <ui-drawer-header>
+            <ui-drawer-title>NASA API</ui-drawer-title>
+            <ui-drawer-subtitle>Data request service</ui-drawer-subtitle>
+          </ui-drawer-header>
+          <ui-drawer-content>
+            <ui-nav>
+              <ui-nav-item active><router-link to="/home">Домой</router-link></ui-nav-item>
+              <ui-nav-item v-if="showAdminBoard"><router-link to="/admin">Админ панель</router-link></ui-nav-item>
+              <ui-nav-item><router-link  to="/profile">Профиль</router-link></ui-nav-item>
+              <ui-nav-item @click.prevent="logOut">Выйти</ui-nav-item>
+            </ui-nav>
+          </ui-drawer-content>
+        </ui-drawer>
       </div>
-
-      <div v-if="!currentUser">
-        <li>
-          <router-link to="/login">
-            Login
-          </router-link>
-        </li>
+      <router-view class="content"/>
       </div>
-
-      <div v-if="currentUser">
-        <li>
-          <router-link to="/profile">
-            {{ currentUser.username }}
-          </router-link>
-        </li>
-        <li>
-          <button @click.prevent="logOut">
-            LogOut
-          </button>
-        </li>
-      </div>
-    </nav>
-
-    <div>
-      <router-view />
-    </div>
   </div>
 </template>
 
 <script>
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 
@@ -52,6 +32,8 @@ export default {
   setup () {
     const store = useStore()
     const router = useRouter()
+    const isOpened = ref(false)
+    const burgerIcon = { on: 'menu_open', off: 'menu' }
 
     const currentUser = computed(function () {
       return store.state.auth.user
@@ -65,12 +47,36 @@ export default {
       return false
     })
 
+    async function toggleMenu () {
+      isOpened.value = !isOpened.value
+    }
+
     async function logOut () {
       store.dispatch('auth/logout')
       router.push('/login')
     }
 
-    return { logOut, currentUser, showAdminBoard }
+    return { logOut, currentUser, showAdminBoard, isOpened, toggleMenu, burgerIcon }
   }
 }
 </script>
+
+<style lang="css">
+  .page {
+    display: flex;
+  }
+
+  .menu-drawer {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .menu-drawer-burger {
+    width: 30px;
+  }
+
+  .content {
+    margin: 0 auto;
+  }
+
+</style>

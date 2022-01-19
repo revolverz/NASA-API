@@ -1,23 +1,33 @@
 <template>
-  <div>
-    <header>
-      <h3>
-        <strong>{{currentUser.username}}</strong> Profile
-      </h3>
-    </header>
-    <p>
-      <strong>Id:</strong>
-      {{currentUser.id}}
-    </p>
-    <p>
-      <strong>Email:</strong>
-      {{currentUser.email}}
-    </p>
-    <strong>Authorities:</strong>
-    <ul>
-      <li v-for="role in currentUser.roles" :key="role">{{role}}</li>
-    </ul>
-  </div>
+  <ui-card class="profile">
+    <ui-card-content>
+      <ui-card-text>
+        <header>
+          <h3>
+            <strong>{{currentUser.username}}</strong> Profile
+          </h3>
+        </header>
+      </ui-card-text>
+      <ui-card-text>
+        <p>
+          <strong>Id:</strong>
+          {{currentUser.id}}
+        </p>
+      </ui-card-text>
+      <ui-card-text>
+        <p>
+          <strong>Email:</strong>
+          {{currentUser.email}}
+        </p>
+      </ui-card-text>
+      <ui-card-text>
+        <strong>Authorities:</strong>
+        <ul>
+          <li v-for="role in currentUser.roles" :key="role">{{role}}</li>
+        </ul>
+      </ui-card-text>
+    </ui-card-content>
+  </ui-card>
 </template>
 
 <script>
@@ -49,3 +59,13 @@ export default {
   }
 }
 </script>
+
+<style lang="css">
+
+  .profile {
+    margin-top: 100px;
+    height: max-content;
+    background-color: color.$red-800;;
+  }
+
+</style>

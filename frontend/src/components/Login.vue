@@ -61,9 +61,11 @@ import { useI18n } from 'vue-i18n'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 import messages from './locales'
+import { useToast } from 'balm-ui'
 
 export default {
   setup () {
+    const $toast = useToast()
     const store = useStore()
     const router = useRouter()
 
@@ -117,9 +119,12 @@ export default {
             router.push('/profile')
           })
           .catch(error => {
-            loading.value = false
-
             console.log(error)
+            loading.value = false
+            $toast({
+              message: error,
+              position: 'top'
+            })
           })
       }
     }
